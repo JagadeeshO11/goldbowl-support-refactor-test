@@ -1,7 +1,5 @@
-import { CustomerPage } from './CustomerPage'
-
-export function CustomerCategoriesPage() { return <CustomerPage /> }
-export function CustomerPaymentPage() { return <CustomerPage /> }
-export function CustomerSuccessPage() { return <CustomerPage /> }
-export function CustomerNotificationsPage() { return <CustomerPage /> }
-export function CustomerOffersPage() { return <CustomerPage /> }
+export { CustomerCategoriesPage } from './CustomerCategoriesPage'
+export { CustomerPaymentPage } from './CustomerPaymentPage'
+export { CustomerSuccessPage } from './CustomerSuccessPage'
+export { CustomerNotificationsPage } from './CustomerNotificationsPage'
+export { CustomerOffersPage } from './CustomerOffersPage'
