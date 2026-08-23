@@ -1,0 +1,2 @@
+/* Shared Customer page styles remain sourced from the existing global customer stylesheet during this safe migration. */
+@import '../../styles/customer-final-overrides.css';
