@@ -1,5 +1,7 @@
-import { CustomerPage } from './CustomerPage'
+import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Minus, Plus, Trash2 } from 'lucide-react'
+import { products } from '../../data/mockData'
+import { CustomerPageShell, FoodImage, CHECKOUT_KEY, money, readCart, saveCart } from './CustomerPage.shared'
 
-export function CustomerCartPage() {
-  return <CustomerPage />
-}
+export function CustomerCartPage(){const navigate=useNavigate();const [items,setItems]=React.useState(readCart);const detailed=items.map(i=>({...i,product:products.find(p=>p.id===i.productId)})).filter(i=>i.product);const update=(id,d)=>{const next=items.map(i=>i.productId===id?{...i,quantity:i.quantity+d}:i).filter(i=>i.quantity>0);setItems(next);saveCart(next)};const subtotal=detailed.reduce((s,i)=>s+i.product.price*i.quantity,0),delivery=subtotal?40:0,taxes=Math.round(subtotal*.05),total=subtotal+delivery+taxes;return <CustomerPageShell title="Your cart">{!detailed.length?<div className="route-success"><h1>Your cart is empty</h1><p>Choose dishes from the menu to continue.</p><Link className="route-primary" to="/customer/categories">Explore Menu</Link></div>:<><div>{detailed.map(i=><div className="route-cart-item" key={i.productId}><span className="route-cart-image"><FoodImage src={i.product.image} alt={i.product.name}/></span><div><strong>{i.product.name}</strong><small>{money(i.product.price)} • Qty {i.quantity}</small><div style={{display:'flex',gap:6,marginTop:8}}><button type="button" onClick={()=>update(i.productId,-1)}><Minus size={13}/></button><button type="button" onClick={()=>update(i.productId,1)}><Plus size={13}/></button><button type="button" onClick={()=>update(i.productId,-i.quantity)}><Trash2 size={13}/></button></div></div><strong>{money(i.product.price*i.quantity)}</strong></div>)}</div><div className="route-summary"><span>Subtotal <b>{money(subtotal)}</b></span><span>Delivery <b>{money(delivery)}</b></span><span>Taxes <b>{money(taxes)}</b></span><hr/><span>Total <b>{money(total)}</b></span></div><button type="button" className="route-primary" onClick={()=>{localStorage.setItem(CHECKOUT_KEY,JSON.stringify({items,subtotal,delivery,taxes,total}));navigate('/customer/checkout')}}>Proceed to Checkout</button></>}</CustomerPageShell>}
