@@ -1,5 +1,7 @@
-import { CustomerPage } from './CustomerPage'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { MapPin } from 'lucide-react'
+import { branches } from '../../data/mockData'
+import { CustomerPageShell, CHECKOUT_KEY, money } from './CustomerPage.shared'
 
-export function CustomerCheckoutPage() {
-  return <CustomerPage />
-}
+export function CustomerCheckoutPage(){const navigate=useNavigate();const [type,setType]=React.useState('Delivery');const [branch,setBranch]=React.useState(branches[0]?.id||1);const [address,setAddress]=React.useState('Home');const cart=(()=>{try{return JSON.parse(localStorage.getItem(CHECKOUT_KEY))||null}catch{return null}})();if(!cart)return <CustomerPageShell title="Checkout"><div className="route-success"><h1>Your checkout is empty</h1><a className="route-primary" href="/customer/cart">Back to Cart</a></div></CustomerPageShell>;const selectedBranch=branches.find(b=>b.id===branch)||branches[0];return <CustomerPageShell title="Checkout"><h2>Order type</h2><div className="route-segment"><button type="button" className={type==='Delivery'?'active':''} onClick={()=>setType('Delivery')}>🚚 Delivery</button><button type="button" className={type==='Pickup'?'active':''} onClick={()=>setType('Pickup')}>🏪 Pickup</button></div><h2>Branch</h2>{branches.map(b=><button type="button" className="route-card" key={b.id} onClick={()=>setBranch(b.id)} style={{width:'100%',textAlign:'left',borderColor:b.id===branch?'#b4811d':undefined}}><span>🏪</span><span>{b.name}<small>{b.distance}</small></span><b>{b.id===branch?'✓':'›'}</b></button>)}{type==='Delivery'&&<><h2>Delivery address</h2><button type="button" className="route-card" onClick={()=>setAddress(address==='Home'?'Work':'Home')} style={{width:'100%',textAlign:'left'}}><MapPin/><span>{address}<small>{address==='Home'?'42, 5th Main Road, Bengaluru':'12, MG Road, Bengaluru'}</small></span><b>Change</b></button></>}<h2>Order total</h2><div className="route-summary"><span>Total <b>{money(cart.total)}</b></span></div><button type="button" className="route-primary" onClick={()=>{localStorage.setItem(CHECKOUT_KEY,JSON.stringify({...cart,type,branch:selectedBranch.id,address}));navigate('/customer/payment')}}>Continue to Payment</button></CustomerPageShell>}
